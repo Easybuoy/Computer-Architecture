@@ -35,59 +35,18 @@ class CPU:
             address = 0
             with open(sys.argv[1]) as f:
                 for line in f:
-                    # deal with comments
-                    # split before and after any comment symbol '#'
                     comment_split = line.split("#")
-
-                    # convert the pre-comment portion (to the left) from binary to a value
-                    # extract the first part of the split to a number variable
-                    # and trim whitespace
                     num = comment_split[0].strip()
 
-                    # ignore blank lines / comment only lines
                     if len(num) == 0:
                         continue
 
-                    # set the number to an integer of base 2
                     value = int(num, 2)
 
-                    # print the value in binary and in decimal
-                    # uncomment for debugging: print(f"{value:08b}: {value:d}")
-
-                    # add the value in to the memory at the index of address
                     self.ram[address] = value
 
-                    # increment the address
+
                     address += 1
-        # try:
-        #     with open(sys.argv[1]) as f:
-        #         for line in f:
-        #             # deal with comments
-        #             # split before and after any comment symbol '#'
-        #             comment_split = line.split("#")
-
-        #             # convert the pre-comment portion (to the left) from binary to a value
-        #             # extract the first part of the split to a number variable
-        #             # and trim whitespace
-        #             num = comment_split[0].strip()
-
-        #             # ignore blank lines / comment only lines
-        #             if len(num) == 0:
-        #                 continue
-
-        #             # set the number to an integer of base 2
-
-        #             value = int(num, 2)
-        #             # program.append(value)
-        #             # print(value)
-        #             # print the value in binary and in decimal
-        #             # print(f"{value:08b}: {value:d}")
-        #             self.ram[address] = value
-        #             address += 1
-
-            # for instruction in program:
-            #     self.ram[address] = instruction
-            #     address += 1
         except FileNotFoundError:
             print(f"{sys.argv[0]}: {sys.argv[1]} not found")
             sys.exit(2)
@@ -100,7 +59,6 @@ class CPU:
         # elif op == "SUB": etc
         elif op == "MUL":
             self.reg[reg_a] *= self.reg[reg_b]
-            print(self.reg[reg_a])
         else:
             raise Exception("Unsupported ALU operation")
 
