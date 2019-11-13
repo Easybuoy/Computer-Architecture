@@ -45,7 +45,6 @@ class CPU:
 
                     self.ram[address] = value
 
-
                     address += 1
         except FileNotFoundError:
             print(f"{sys.argv[0]}: {sys.argv[1]} not found")
