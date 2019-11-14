@@ -2,6 +2,12 @@
 
 import sys
 
+LDI = 0b10000010
+PRN = 0b01000111
+HLT = 0b00000001
+MUL = 0b10100010
+POP = 0b01000110
+PUSH = 0b01000101
 
 class CPU:
     """Main CPU class."""
@@ -11,6 +17,29 @@ class CPU:
         self.reg = [0] * 8
         self.ram = [0] * 256
         self.pc = 0
+
+        self.ram = [0] * 256
+
+        # Register (R0 - R7)
+        self.register = [0] * 8
+
+        # Program Counter
+        self.pc = self.register[0]
+
+        # Instruction Register
+        self.ir = None
+
+        # Stack Pointer 
+        self.sp = 7 # Stack pointer R7
+
+        # set up branchtable
+        self.branchtable = {}
+        self.branchtable[LDI] = self.handle_ldi
+        self.branchtable[PRN] = self.handle_prn
+        self.branchtable[HLT] = self.handle_hlt
+        self.branchtable[MUL] = self.handle_mul
+        self.branchtable[PUSH] = self.handle_push
+        self.branchtable[POP] = self.handle_pop
 
     def load(self):
         """Load a program into memory."""
@@ -83,31 +112,49 @@ class CPU:
 
     def run(self):
         """Run the CPU."""
-        IR = self.ram[self.pc]
-        PRN = 0b01000111
-        LDI = 0b10000010
-        HLT = 0b00000001
-        MUL = 0b10100010
+       
 
         running = True
 
         while running:
-            IR = self.ram[self.pc]
+            self.ir = self.ram[self.pc]
             operand_a = self.ram_read(self.pc + 1)
             operand_b = self.ram_read(self.pc + 2)
 
-            if IR == LDI:
-                self.reg[operand_a] = operand_b
-                self.pc += 3
-            elif IR == PRN:
-                print(self.reg[operand_a])
-                self.pc += 2
-            elif IR == MUL:
-                self.alu("MUL", operand_a, operand_b)
-                self.pc += 3
-            elif IR == HLT:
-                running = False
+            self.branchtable[self.ir](operand_a, operand_b)
 
+
+    def handle_hlt(self, a, b):
+        sys.exit()
+
+    def handle_ldi(self, a, b):
+        self.register[a] = b
+        self.pc += 3
+
+    def handle_prn(self, a, b):
+        print(self.register[a])
+        self.pc += 2
+
+    def handle_mul(self, a, b):
+        self.alu("MUL", a, b)
+        self.pc += 3
+
+    def handle_pop(self, a, b):
+        val = self.ram[self.register[self.sp]]
+
+        # POP
+        self.register[a] = val
+        self.register[self.sp] += 1
+        self.pc += 2
+
+    def handle_push(self, a, b):
+        val = self.register[a]
+
+        # PUSH
+        self.register[self.sp] -= 1
+        self.ram[self.register[self.sp]] = val
+        self.pc += 2
+        
     def ram_read(self, address):
         return self.ram[address]
 
