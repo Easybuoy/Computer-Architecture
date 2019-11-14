@@ -9,6 +9,7 @@ MUL = 0b10100010
 POP = 0b01000110
 PUSH = 0b01000101
 
+
 class CPU:
     """Main CPU class."""
 
@@ -29,8 +30,8 @@ class CPU:
         # Instruction Register
         self.ir = None
 
-        # Stack Pointer 
-        self.sp = 7 # Stack pointer R7
+        # Stack Pointer
+        self.sp = 7  # Stack pointer R7
 
         # set up branchtable
         self.branchtable = {}
@@ -47,16 +48,6 @@ class CPU:
         address = 0
 
         # For now, we've just hardcoded a program:
-
-        program = [
-            # From print8.ls8
-            # 0b10000010,  # LDI R0,8
-            # 0b00000000,
-            # 0b00001000,
-            # 0b01000111,  # PRN R0
-            # 0b00000000,
-            # 0b00000001,  # HLT
-        ]
         if len(sys.argv) != 2:
             print("usage: ls8.py <filename>")
             sys.exit(1)
@@ -112,7 +103,6 @@ class CPU:
 
     def run(self):
         """Run the CPU."""
-       
 
         running = True
 
@@ -122,7 +112,6 @@ class CPU:
             operand_b = self.ram_read(self.pc + 2)
 
             self.branchtable[self.ir](operand_a, operand_b)
-
 
     def handle_hlt(self, a, b):
         sys.exit()
@@ -154,7 +143,7 @@ class CPU:
         self.register[self.sp] -= 1
         self.ram[self.register[self.sp]] = val
         self.pc += 2
-        
+
     def ram_read(self, address):
         return self.ram[address]
 
