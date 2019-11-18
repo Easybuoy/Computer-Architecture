@@ -106,6 +106,8 @@ class CPU:
 
         running = True
 
+
+
         while running:
             self.ir = self.ram[self.pc]
             operand_a = self.ram_read(self.pc + 1)
